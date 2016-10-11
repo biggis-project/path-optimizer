@@ -1,0 +1,7 @@
+# ignore everything in this data dir
+# users are expected to download the data manually
+*
+
+# keep only the following files
+!README.md
+!.gitignore
