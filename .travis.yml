@@ -1,0 +1,9 @@
+language: bash
+
+sudo: required
+
+script:
+  - echo "build not implemented yet"
+
+after_success:
+  - echo "done."
