@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/biggis-project/path-optimizer.svg?branch=master)][Travis]
+[Travis]: https://travis-ci.org/biggis-project/path-optimizer
+
 # About the project
 
 The project contains the prototype of a web application that provides to services:
