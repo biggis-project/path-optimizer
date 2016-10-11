@@ -1,0 +1,20 @@
+package joachimrussig.heatstressrouting.webapi;
+
+import org.junit.Test;
+
+import static io.restassured.RestAssured.*;
+import static io.restassured.matcher.RestAssuredMatchers.*;
+import static org.hamcrest.Matchers.*;
+
+public class RoutingTest {
+
+	@Test
+	public void testRouting() throws Exception {
+		given().queryParam("start", "49.0118083,8.4251357")
+				.queryParam("destination", "49.0126868,8.4065707")
+				.queryParam("time", "2015-08-31T10:00:00").when()
+				.get("/heatstressrouting/api/v1/routing");
+
+	}
+
+}
