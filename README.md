@@ -21,14 +21,6 @@ $ docker-compose build
 $ docker-compose up
 ```
 
-# TODO
-- init script (runs after the user clones the repository)
-  - download OSM / PBF dataset (parameter of the init script)
-  - download thermal flight data from some URI for preprocessing purposes
-  - we should create a tile pyramid for the frontend (currently a 1Mpx version is shown to the client)
-
-- location api from graphhopper
-
 # Contact
 
 If there are any questions please feel free and send a mail to: <joachim.russig@gmx.de>.
