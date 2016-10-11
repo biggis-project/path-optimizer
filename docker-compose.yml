@@ -1,0 +1,19 @@
+version: '2'
+services:
+  front-end:
+    build: 
+      context: ./shiny-frontend
+      dockerfile: Dockerfile
+      args:
+        BACKEND_HOST: back-end # the same as the service name of the back-end server 
+        BACKEND_PORT: 8080
+    ports:
+      - 80:80
+    depends_on:
+      - back-end
+  back-end:
+    build: 
+      context: ./target
+      dockerfile: Dockerfile
+    ports: 
+      - 8080:8080
