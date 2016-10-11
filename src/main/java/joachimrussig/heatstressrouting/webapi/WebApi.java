@@ -70,8 +70,8 @@ public class WebApi extends ResourceConfig {
 	}
 
 	private enum TimeUnit {
-		HOUR, MINUTE, SECOND;
-	}
+		HOUR, MINUTE, SECOND
+    }
 
 	private Scheduler createUpdateWeatherDataScheduler(int interval,
 			TimeUnit unit, ResourceBinder resourceBinder, int startDelay)

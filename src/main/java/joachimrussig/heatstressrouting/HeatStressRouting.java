@@ -8,7 +8,7 @@ package joachimrussig.heatstressrouting;
 
 public class HeatStressRouting {
 
-	// TODO make the files configurable, e.g. threw an config file
+	// TODO make the files configurable, e.g. in a config file
 	public static final String BASE_DIR = "./src/main/resources/data/";
 	public static final String OSM_FILE_NAME = "karlsruhe.osm";
 	public static final String WEATHER_FILE_NAME = "weather_data.csv";

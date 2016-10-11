@@ -38,7 +38,7 @@ public class ServerInfo {
 
 	// https://github.com/Codingpedia/demo-rest-jersey-spring/blob/master/src/main/java/org/codingpedia/demo/rest/resource/manifest/ManifestService.java
 	private Attributes getManifestAttributes()
-			throws FileNotFoundException, IOException {
+			throws IOException {
 		InputStream resourceAsStream = context
 				.getResourceAsStream("/META-INF/MANIFEST.MF");
 		Manifest mf = new Manifest();

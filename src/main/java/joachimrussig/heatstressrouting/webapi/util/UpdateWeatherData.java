@@ -21,55 +21,56 @@ import joachimrussig.heatstressrouting.webapi.ResourceBinder;
  * discription of the weather data see here {@link WeatherDataParser}. The data
  * are fetched from the URL specified in
  * {@link UpdateWeatherData#WATHER_DATA_ZIP_URL}.
- * 
- * @author Joachim Rußig
  *
+ * @author Joachim Rußig
  */
 public class UpdateWeatherData implements org.quartz.Job {
 
-	private static Logger logger = LoggerFactory
-			.getLogger(UpdateWeatherData.class);
-	/**
-	 * See DWD station id of the weather station in Rheinstetten.
-	 */
-	public static final String WEATHER_STAION_ID = "04177";
-	/**
-	 * The URL from which the weather data are downloaded.
-	 */
-	public static final String WATHER_DATA_ZIP_URL = "ftp://ftp-cdc.dwd.de/pub/CDC/"
-			+ "observations_germany/climate/hourly/air_temperature/recent/"
-			+ "stundenwerte_TU_04177_akt.zip";
+    private static Logger logger = LoggerFactory
+            .getLogger(UpdateWeatherData.class);
+    /**
+     * See DWD station id of the weather station in Rheinstetten.
+     */
+    public static final String WEATHER_STAION_ID = "04177";
+    /**
+     * The URL from which the weather data are downloaded.
+     */
+    public static final String WATHER_DATA_ZIP_URL =
+            "ftp://ftp-cdc.dwd.de/pub/CDC/"
+                    + "observations_germany/climate/hourly/air_temperature/recent/"
+                    + "stundenwerte_TU_04177_akt.zip";
 
-	@Override
-	public void execute(JobExecutionContext context)
-			throws JobExecutionException {
-		String baseDir = context.getJobDetail().getJobDataMap()
-				.getString("baseDir");
-		ResourceBinder resourceBinder = (ResourceBinder) context.getJobDetail()
-				.getJobDataMap().get("resourceBinder");
+    @Override
+    public void execute(JobExecutionContext context)
+            throws JobExecutionException {
+        String baseDir = context.getJobDetail().getJobDataMap()
+                .getString("baseDir");
+        ResourceBinder resourceBinder = (ResourceBinder) context.getJobDetail()
+                .getJobDataMap().get("resourceBinder");
 
-		logger.info("Updateing weather data (baseDir = " + baseDir + ")");
+        logger.info("Updating weather data (baseDir = " + baseDir + ")");
 
-		try {
+        try {
 
-			boolean updated = false;
-			if (resourceBinder.getRoutingHelper() != null) {
-				File weatherData = Paths
-						.get(baseDir, HeatStressRouting.WEATHER_FILE_NAME)
-						.toFile();
-				resourceBinder.getRoutingHelper().updateWeatherData(weatherData,
-						new URL(WATHER_DATA_ZIP_URL), true, true);
-				updated = true;
-			}
+            boolean updated = false;
+            if (resourceBinder.getRoutingHelper() != null) {
+                File weatherData = Paths
+                        .get(baseDir, HeatStressRouting.WEATHER_FILE_NAME)
+                        .toFile();
+                resourceBinder.getRoutingHelper().updateWeatherData(weatherData,
+                        new URL(WATHER_DATA_ZIP_URL), true, true);
+                updated = true;
+            }
 
-			if (updated)
-				logger.info("file updated");
-			else
-				logger.info("file not updated");
-		} catch (IOException e) {
-			throw new JobExecutionException(e);
-		}
+            if (updated) {
+                logger.info("file updated");
+            } else {
+                logger.info("file not updated");
+            }
+        } catch (IOException e) {
+            throw new JobExecutionException(e);
+        }
 
-	}
+    }
 
 }
