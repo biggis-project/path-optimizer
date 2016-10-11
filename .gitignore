@@ -1,7 +1,17 @@
+# Eclipse / IDEA stuff
+/.project
+/.settings
+/.idea/
+/*.iml
+
+
+# RStudio-related stuff
 .Rhistory
 .RData
 .DS_Store
-.project
-target
-.settings
 .Rproj.user
+
+
+# Other stuff
+/target
+
