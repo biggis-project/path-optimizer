@@ -1,0 +1,107 @@
+/* error messages */
+.alert {
+  width: 96%;
+}
+
+/**************************/
+/* pop ups                */
+/**************************/
+table.marker-popup {
+  border-spacing: 10px;
+}
+
+table.marker-popup td {
+  padding-right: 5px;
+}
+
+.leaflet-popup {
+  z-index: 999;
+}
+
+.good {
+  color: #00cc00;
+}
+
+.poor {
+  color: #ff0000;
+}
+
+
+/**************************/
+/* select action buttons  */
+/**************************/
+
+/* make sure, that ther are displayed at the same vertical position
+   as the text input field */
+.inline-action-button-container {
+  display: inline-block;
+  vertical-align: bottom;
+  margin-bottom: 15px;
+}
+
+.action-button-clicked, .action-button-clicked:focus {
+  background-color: #337ab7;
+  color: #fff;
+}
+
+.action-button-clicked:hover {
+  background-color: #609dd2;
+  color: #fff;
+}
+
+
+/**************************/
+/* time input             */
+/**************************/
+
+.my-shiny-time-input {
+  margin-bottom: 0;
+}
+
+.inline-time-input-container {
+  display: inline-block;
+  vertical-align: bottom;
+  margin-bottom: 15px;
+}
+
+.my-shiny-time-input input {
+    text-align: right;
+}
+
+.inline-time-input-container input:invalid {
+    border-color: red;
+}
+
+.my-shiny-time-input .form-control {
+  float: none;
+  padding: 2px 2px;
+}
+
+.selectize-control {
+  width: 96%;
+}
+
+/**********************************/
+/* earliest and latest time input */
+/**********************************/
+.well-optional {
+    width: 96%;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+}
+
+.well-optional .inline-time-input-container {
+  vertical-align: bottom;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+
+.inline-checkbox-container {
+    min-width: 120px;
+}
+
+.inline-checkbox-container label {
+    font-weight: 700;
+}
