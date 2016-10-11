@@ -8,7 +8,7 @@ services:
         BACKEND_HOST: back-end # the same as the service name of the back-end server 
         BACKEND_PORT: 8080
     ports:
-      - 80:80
+      - 8000:80 # frontend will be available at http://localhost:8000
     depends_on:
       - back-end
   back-end:
