@@ -11,7 +11,9 @@ ARG BACKEND_PORT=8080
 ENV BACKEND_HOST=$BACKEND_HOST
 ENV BACKEND_PORT=$BACKEND_PORT
 
+# Fixed Issue #6
 RUN apt-get update; exit 0
+
 RUN apt-get -y install \
 	curl \
 	libssl-dev \ 
