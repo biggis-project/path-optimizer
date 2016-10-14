@@ -22,16 +22,14 @@ if (!require("optparse"))
 #
 ############################################################################
 
-OSM_FILE <- normalizePath("../src/main/resources/data/karlsruhe.osm")
+OSM_FILE <- "../src/main/resources/data/karlsruhe.osm"
 
 # georeferenced data of the thermal scan
-RASTER_MORGEN_GEORECT <- normalizePath("../shiny-frontend/HeatStressRouting-Frontend/data/raster_morgen_georect.tif")
-RASTER_ABEND_GEORECT <- normalizePath("../shiny-frontend/HeatStressRouting-Frontend/data/raster_abend_georect.tif")
+RASTER_MORGEN_GEORECT <- "../shiny-frontend/HeatStressRouting-Frontend/data/raster_morgen_georect.tif"
+RASTER_ABEND_GEORECT <- "../shiny-frontend/HeatStressRouting-Frontend/data/raster_abend_georect.tif"
 
-OUT_DIR <- normalizePath("../src/main/resources/data/")
+OUT_DIR <- "../src/main/resources/data/"
 OUT_FILE_COMBINED <- paste0(OUT_DIR, "/weighted_lines.csv")
-
-# OSMAR_FILE <- normalizePath("./osmar_karlsruhe.RData")
 
 ############################################################################
 #
@@ -44,7 +42,14 @@ if (!interactive()) {
   flog.threshold(INFO)
   
   args <- commandArgs(trailingOnly=TRUE)
-  flog.debug("args = ", args, capture = T)
+  
+  # detect the dir were the scripts are located 
+  # (which can differ from the current working dir)
+  # See: http://stackoverflow.com/a/1815743
+  initial.options <- commandArgs(trailingOnly = FALSE)
+  file.arg.name <- "--file="
+  script.name <- sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
+  script.basename <- dirname(script.name)
   
   option_list = list(
     make_option(c("--osm_file"), action="store", default=OSM_FILE, type='character',
@@ -72,13 +77,13 @@ if (!interactive()) {
              normalizePath(opt$osm_file), normalizePath(opt$raster_morgen), normalizePath(opt$raster_abend), normalizePath(opt$output))
   
   # load the actual implementation
-  source("weightedlines_impl.R")
+  source(paste(script.basename, "weightedlines_impl.R", sep = "/"))
   
   weightedLines(
-    osm_file = normalizePath(opt$osm_file),
-    raster_morgen_georect_file = normalizePath(opt$raster_morgen),
-    raster_abend_georect_file = normalizePath(opt$raster_abend),
-    out_file = normalizePath(opt$output)
+    osm_file = opt$osm_file,
+    raster_morgen_georect_file = opt$raster_morgen,
+    raster_abend_georect_file = opt$raster_abend,
+    out_file = opt$output
   )
   
 }

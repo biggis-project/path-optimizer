@@ -313,7 +313,7 @@ extractHighWays <- function(osmar_obj) {
 
 
 
-computeWeightedEdges <- function(raster_obj, osm_hw, osm_hw_sp, plot = T) {
+computeWeightedEdges <- function(raster_obj, osm_hw, osm_hw_sp, plot = F) {
   if (plot == TRUE) {
     plot(raster_obj, col = rev(heat.colors(255)))
     plot(osm_hw_sp$lines, add = T)
