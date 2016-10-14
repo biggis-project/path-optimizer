@@ -18,8 +18,13 @@ http://ipe-koi09.fzi.de:8000
 
 
 # Prerequisites
+- [mvn (Maven)](https://maven.apache.org/install.html)
 - [docker](https://docs.docker.com/engine/installation/)
 - [docker-compose](https://docs.docker.com/compose/install/)
+- [R](https://cran.r-project.org/doc/FAQ/R-FAQ.html#How-can-R-be-installed_003f)
+- [gdal](https://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries)
+- [osmosis](https://wiki.openstreetmap.org/wiki/Osmosis#How_to_install)
+- Windows: e.g. [cygwin](https://cygwin.com/install.html) to execute sh scripts
 - TODO ...
 
 
@@ -28,6 +33,7 @@ http://ipe-koi09.fzi.de:8000
 $ git clone git://github.com/biggis-project/path-optimizer.git
 $ cd path-optimizer
 $ ./preprocess-data.sh
+$ mvn clean install
 $ docker-compose build
 $ docker-compose up
 ```
