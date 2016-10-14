@@ -23,8 +23,8 @@ withinBBox <- function(point, bbox) {
 #' @return a list of (morgen, abend) of the loaded and resampled raster data
 #'
 loadRasterData <- function(base_dir = "data/",
-                           morgen_file = "raster_morgen_georect.tif",
-                           abend_file = "raster_abend_georect.tif",
+                           morgen_file = "thermal-flight-karlsruhe-morning.tif",
+                           abend_file = "thermal-flight-karlsruhe-evening.tif",
                            max_pixel = 1000000) {
   # Assamble the filenames with an '_$max_pixel$px' suffix,
   # e.g. 'raster_morgen_georect_1000000px.tif

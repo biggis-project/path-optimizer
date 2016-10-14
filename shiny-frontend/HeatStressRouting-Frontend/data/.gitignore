@@ -1,0 +1,8 @@
+# ignore everything in this data dir
+# the data required by the shiny front-end are generated 
+# by the ./preprocess-data.sh script in the root directory of the project 
+*
+
+# keep only the following files
+!README.md
+!.gitignore
