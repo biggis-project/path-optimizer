@@ -1,5 +1,6 @@
 if (!require("pacman"))
   install.packages("pacman")
+
 # load and install the required packages if necessary
 pacman::p_load(
   "futile.logger",
@@ -16,37 +17,10 @@ pacman::p_load(
 
 ############################################################################
 #
-# Config
-#
-############################################################################
-
-
-# # Extracted using Osmosis [1] from the karlsruhe-regbez-160501.osm.pbf [2]
-# #
-# # Osmosis command:
-# # osmosis \
-# # --read-pbf karlsruhe-regbez-160501.osm.pbf \
-# # --bounding-box top=49.025 left=8.385 bottom=48.99 right=8.435 completeWays=yes \
-# # --write-xml karlsruhe.osm
-# #
-# # [1] http://wiki.openstreetmap.org/wiki/Osmosis
-# # [2] http://download.geofabrik.de/europe/germany/baden-wuerttemberg/karlsruhe-regbez.html#)
-# OSM_FILE <- normalizePath("../src/main/resources/data/karlsruhe.osm")
-#
-# # georeferenced data of the thermal scan
-# RASTER_MORGEN_GEORECT <- normalizePath("../shiny-frontend/HeatStressRouting-Frontend/data/raster_morgen_georect.tif")
-# RASTER_ABEND_GEORECT <- normalizePath("../shiny-frontend/HeatStressRouting-Frontend/data/raster_abend_georect.tif")
-#
-# OUT_DIR <- normalizePath("../src/main/resources/data/")
-# OUT_FILE_COMBINED <- paste0(OUT_DIR, "weighted_lines.csv")
-#
-# OSMAR_FILE <- normalizePath("./osmar_karlsruhe.RData")
-
-############################################################################
-#
 # Functions
 #
 ############################################################################
+
 # Creates a factory for improved error and warning handling
 # Source: http://stackoverflow.com/questions/4948361/how-do-i-save-warnings-and-errors-as-output-from-a-function/4952908#4952908
 tryCatchFactory <- function(fun) {
@@ -376,35 +350,47 @@ weightedLines <-
            raster_morgen_georect_file,
            raster_abend_georect_file,
            out_file,
-           bbox = osmar::center_bbox(8.38500, 48.99000, 8.43500, 49.02500),
+           bounding_box = c(
+             left = 8.38500,
+             bottom = 48.99000,
+             right = 8.43500,
+             top = 49.02500
+           ),
            osmar_file = NULL,
            print.plots = FALSE) {
+    
+    bbox <-
+      osmar::corner_bbox(bounding_box[["left"]],
+                         bounding_box[["bottom"]],
+                         bounding_box[["right"]],
+                         bounding_box[["top"]])
+    
     if (!is.null(osmar_file) && file.exists(osmar_file)) {
-      flog.debug("loading osmar data set from %s", osmar_file)
+      flog.info("loading osmar data set from %s", osmar_file)
       load(file = osmar_file, verbose = T)
     } else {
-      flog.debug("reading osm file %s", osm_file)
+      flog.info("reading osm file %s", osm_file)
       system.time(osm <-
                     osmar::get_osm(x = bbox, source =  osmsource_file(osm_file)))
-      flog.debug("done")
+      flog.info("done")
       if (!is.null(osmar_file)) {
         save("osm", file = osmar_file)
       }
     }
     
-    flog.debug("extracting high ways")
+    flog.info("extracting high ways")
     osm_hw <- extractHighWays(osm)
     
-    flog.debug("converting highways to spatial lines")
+    flog.info("converting highways to spatial lines")
     system.time(osm_hw_sp <- as_sp(osm_hw))
     
-    flog.debug("splite ways in line segments")
+    flog.info("splite ways in line segments")
     system.time(line_segments <- getLineSegments(osm_hw_sp$lines))
     
     osm_hw_sp_extent <- extent(osm_hw_sp$lines)
     raster_extent <- extent(osm_hw_sp$lines)
     
-    flog.debug("load raster data")
+    flog.info("load raster data")
     raster_morgen_georect <-
       raster::raster(readGDAL(raster_morgen_georect_file))
     raster_morgen_georect <-
@@ -423,11 +409,11 @@ weightedLines <-
       plot(osm_hw_sp$lines, add = T)
     }
     
-    flog.debug("compute weighted lines 'morgen'")
+    flog.info("compute weighted lines 'morgen'")
     weighted_lines_morgen <-
       computeWeightedEdges(raster_morgen_georect, osm_hw, osm_hw_sp)
     
-    flog.debug("compute weighted lines 'abend'")
+    flog.info("compute weighted lines 'abend'")
     weighted_lines_abend <-
       computeWeightedEdges(raster_abend_georect, osm_hw, osm_hw_sp)
     
@@ -438,7 +424,7 @@ weightedLines <-
     weighted_lines_combined <-
       rbind(weighted_lines_morgen, weighted_lines_abend)
     
-    flog.debug("write results to %s", out_file)
+    flog.info("write results to %s", out_file)
     write.table(
       weighted_lines_combined[, .(
         way_id,

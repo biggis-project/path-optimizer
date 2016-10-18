@@ -203,7 +203,7 @@ download_thermal_flight_files() {
 		exit 1
 	fi
 
-	THERMAL_FLIGHT_DATA=$(find "$THERMAL_FLIGHT_PREFIX*")
+	THERMAL_FLIGHT_DATA=$(find $THERMAL_FLIGHT_PREFIX*)
 	info "Copy $(echo $THERMAL_FLIGHT_DATA | tr '\n' ' ') to $SHINY_DATA_DIR..."
 	for file in $THERMAL_FLIGHT_DATA; do
 		debug "Copy $file to $SHINY_DATA_DIR..."
@@ -221,13 +221,24 @@ compute_weighted_lines() {
 		if [ -e $OSM_FILE_CROPPED ] && [ -e $THERMAL_FLIGHT_MORNING ] && 
 			[ -e $THERMAL_FLIGHT_EVENING ]; then
 			
+			# set the --verbose flag if --debug is enabled
+			if [ $DEBUG = true ]; then
+				VERBOSE="--verbose"
+			else 
+				VERBOSE=""
+			fi
 			info "Compute weighted lines for $OSM_FILE_CROPPED usining $THERMAL_FLIGHT_MORNING and $THERMAL_FLIGHT_EVENING..."
 			info "Note: that can take very long"
 			Rscript --vanilla ./preprocessing/weightedlines.R \
 				--osm_file=$OSM_FILE_CROPPED \
-				--raster_morgen=$THERMAL_FLIGHT_MORNING \
-				--raster_abend=$THERMAL_FLIGHT_EVENING \
-				--output=$WEIGHTED_LINES_FILE
+				--raster_morning=$THERMAL_FLIGHT_MORNING \
+				--raster_evening=$THERMAL_FLIGHT_EVENING \
+				--bbox_left=$BBOX_LEFT \
+				--bbox_bottom=$BBOX_BOTTOM \
+				--bbox_right=$BBOX_RIGHT \
+				--bbox_top=$BBOX_TOP \
+				--output=$WEIGHTED_LINES_FILE \
+				$VERBOSE
 				
 			if [ ! $? ]; then 
 				error "Failed to compute weighted lines" 1>&2
