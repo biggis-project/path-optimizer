@@ -97,3 +97,12 @@ table.marker-popup td {
 .inline-checkbox-container label {
     font-weight: 700;
 }
+
+
+/**********************************/
+/* place type input               */
+/**********************************/
+
+.selectize-control.single {
+    width: 96%;
+}
