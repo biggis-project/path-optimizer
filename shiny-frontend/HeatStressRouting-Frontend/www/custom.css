@@ -54,14 +54,14 @@ table.marker-popup td {
 /* time input             */
 /**************************/
 
-.my-shiny-time-input {
-  margin-bottom: 0;
+.input-group .form-control {
+	padding: 6px;
+	width: 6ch !important; /* overwrite shinyTimes element in-line style */
 }
 
 .inline-time-input-container {
   display: inline-block;
   vertical-align: bottom;
-  margin-bottom: 15px;
 }
 
 .my-shiny-time-input input {
@@ -72,14 +72,6 @@ table.marker-popup td {
     border-color: red;
 }
 
-.my-shiny-time-input .form-control {
-  float: none;
-  padding: 2px 2px;
-}
-
-.selectize-control {
-  width: 96%;
-}
 
 /**********************************/
 /* earliest and latest time input */
