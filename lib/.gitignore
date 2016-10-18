@@ -1,0 +1,6 @@
+# ignore everything in this lib dir
+*
+
+# keep only the following files
+!.gitignore
+!OsmAnd-core.jar

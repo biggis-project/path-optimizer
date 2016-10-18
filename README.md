@@ -29,15 +29,13 @@ http://ipe-koi09.fzi.de:8000
 
 
 # Try it out
-``` sh
+```sh
 $ git clone git://github.com/biggis-project/path-optimizer.git
 $ cd path-optimizer
-$ ./preprocess-data.sh
 $ mvn clean install
-$ docker-compose build
 $ docker-compose up
 ```
-
+Now go to `http://localhost:8000/`
 
 # Contact
 If there are any questions please feel free and send a mail to: <joachim.russig@gmx.de>.
