@@ -72,7 +72,6 @@ table.marker-popup td {
     border-color: red;
 }
 
-
 /**********************************/
 /* earliest and latest time input */
 /**********************************/
@@ -81,11 +80,12 @@ table.marker-popup td {
     padding: 0;
     border: none;
     box-shadow: none;
+    margin-bottom: 10px;
 }
 
 .well-optional .inline-time-input-container {
   vertical-align: bottom;
-  margin-bottom: 10px;
+  margin-bottom: -7px;
   margin-left: 10px;
 }
 
