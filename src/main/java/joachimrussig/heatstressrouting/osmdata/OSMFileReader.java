@@ -76,7 +76,7 @@ public class OSMFileReader {
 		boolean pbf = false;
 		CompressionMethod compression = CompressionMethod.None;
 
-		if (file.getName().endsWith(".pdf")) {
+		if (file.getName().endsWith(".pbf")) {
 			pbf = true;
 		} else if (file.getName().endsWith(".gz")) {
 			compression = CompressionMethod.GZip;
