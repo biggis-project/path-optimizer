@@ -74,9 +74,9 @@ shinyServer(function(input, output, session) {
     dateInput(
       "routing_date",
       "Date:",
-      min = dat$time_range$from,
-      max = dat$time_range$to,
-      value = dat$date_default
+      min = as.Date(dat$time_range$from),
+      max = as.Date(dat$time_range$to),
+      value = as.Date(dat$date_default)
     )
   })
 
@@ -136,11 +136,13 @@ shinyServer(function(input, output, session) {
 
   output$routing_results_table <- shiny::renderDataTable({
     # computeTable()
-    tab <- data.frame()
-    if (!is.null(dat$routing_table)) {
-      tab <- dat$routing_table[, !c("duration_ms", "path_optimal"), with = F]
+    tab <- dat$routing_table
+    if (!is.null(dat$routing_table) &&
+        all(c("weighting", "distance", "duration") %in% names(tab))) {
+      tab <- tab[, .(weighting, distance, duration)]
+    } else {
+      tab <- NULL
     }
-    tab <- tab[, .(weighting, distance, duration)]
     tab
   })
 
@@ -270,24 +272,40 @@ shinyServer(function(input, output, session) {
     if (is.null(start_point) || is.null(destination_point))
       return(NULL)
 
+    flog.debug(
+      "input$routing_time = %s, input$routing_date = %s, dat$time_default = %s",
+      input$routing_time,
+      dat$routing_date,
+      dat$time_default
+    )
+    
     # the time input is not valid
     if (!is.null(input$routing_time) && is.na(input$routing_time))
       return(NULL)
-
-    if (!is.null(input$routing_date)) {
-      req_time <- asRequestDateTime(input$routing_date, input$routing_time)
+    
+    if (is.Date(input$routing_date)) {
+      req_date <- input$routing_date
     } else {
-      req_time <- asRequestDateTime(dat$date_default, dat$time_default)
+      req_date <- dat$date_default
     }
-
-    if (req_time < dat$time_range$from ||
-        req_time > dat$time_range$to) {
+    
+    if (is.POSIXlt(input$routing_time)) {
+      req_time <- input$routing_time
+    } else {
+      req_time <- dat$time_default
+    }
+    req_date_time <- asRequestDateTime(req_date, req_time)
+    
+    flog.debug("req_date_time = ", req_date_time, capture = T)
+    
+    if (req_date_time < dat$time_range$from ||
+        req_date_time > dat$time_range$to) {
       createAlert(
         session = session,
         anchorId = "routing_alert_datetime",
         alertId = "routing_alert_datetime_id",
         content = paste0(
-          "date time'", req_time,
+          "date time'", req_date_time,
           "' is not within the supported time range: ",
           dat$time_range$from ,
           " to ",
@@ -308,7 +326,7 @@ shinyServer(function(input, output, session) {
       baseurl = BACKEND_ROUTING_URL,
       start = start_point,
       destination = destination_point,
-      time = req_time,
+      time = req_date_time,
       weighting = c("shortest", input$routing_weightings)
     )
 
@@ -522,9 +540,9 @@ shinyServer(function(input, output, session) {
     dateInput(
       "optimaltime_date",
       "Date:",
-      min = dat$time_range$from,
-      max = dat$time_range$to,
-      value = dat$date_default
+      min = as.Date(dat$time_range$from),
+      max = as.Date(dat$time_range$to),
+      value = as.Date(dat$date_default)
     )
   })
   
@@ -844,23 +862,29 @@ shinyServer(function(input, output, session) {
     
     if (is.null(input$optimaltime_time) || is.na(input$optimaltime_time))
       return(NULL)
-    
-    if (!is.null(input$optimaltime_date)) {
+
+    if (is.Date(input$optimaltime_date)) {
       req_date <- input$optimaltime_date
-      req_time <- asRequestDateTime(req_date, input$optimaltime_time)
     } else {
       req_date <- dat$date_default
-      req_time <- asRequestDateTime(req_date, dat$time_default)
     }
     
-    if (req_time < dat$time_range$from ||
-        req_time > dat$time_range$to) {
+    if (is.POSIXlt(input$optimaltime_time)) {
+      req_time <- input$optimaltime_time
+    } else {
+      req_time <- dat$time_default
+    }
+    
+    req_date_time <- asRequestDateTime(req_date, req_time)
+    
+    if (req_date_time < dat$time_range$from ||
+        req_date_time > dat$time_range$to) {
       createAlert(
         session = session,
         anchorId = "optimaltime_alert_datetime",
         alertId = "optimaltime_alert_datetime_id",
         content = paste0(
-          "date time'", req_time,
+          "date time'", req_date_time,
           "' is not within the supported time range: ",
           dat$time_range$from ,
           " to ",
@@ -914,7 +938,7 @@ shinyServer(function(input, output, session) {
     res <- getOptimalTime(
       baseurl = BACKEND_OPTIMALTIME_URL,
       start = start_point,
-      time = req_time,
+      time = req_date_time,
       place_type = input$optimaltime_place_type,
       max_distance = input$optimaltime_radius,
       max_results = input$optimaltime_max_results,
