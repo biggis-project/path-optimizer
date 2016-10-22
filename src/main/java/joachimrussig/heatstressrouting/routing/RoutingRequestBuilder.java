@@ -5,6 +5,8 @@ import java.util.Locale;
 
 import com.graphhopper.routing.AlgorithmOptions;
 import com.graphhopper.routing.util.EncodingManager;
+import com.graphhopper.routing.util.FlagEncoderFactory;
+import com.graphhopper.util.Parameters;
 import com.graphhopper.util.shapes.GHPoint;
 
 import joachimrussig.heatstressrouting.routing.weighting.WeightingType;
@@ -16,8 +18,8 @@ public class RoutingRequestBuilder {
 	private WeightingType weightingType;
 	private LocalDateTime time;
 
-	private String routingAlgorithm = AlgorithmOptions.DIJKSTRA_BI;
-	private String encodingManager = EncodingManager.FOOT;
+	private String routingAlgorithm = Parameters.Algorithms.DIJKSTRA_BI;
+	private String encodingManager = FlagEncoderFactory.FOOT;
 	private Locale locale = Locale.ENGLISH;
 
 	protected RoutingRequestBuilder(GHPoint start, GHPoint destination,

@@ -3,8 +3,8 @@ package joachimrussig.heatstressrouting.routing;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
-import com.graphhopper.routing.AlgorithmOptions;
-import com.graphhopper.routing.util.EncodingManager;
+import com.graphhopper.routing.util.FlagEncoderFactory;
+import com.graphhopper.util.Parameters;
 import com.graphhopper.util.shapes.GHPoint;
 
 import joachimrussig.heatstressrouting.routing.weighting.WeightingType;
@@ -42,7 +42,7 @@ public class RoutingRequest {
 	protected RoutingRequest(GHPoint start, GHPoint destination,
 			WeightingType weightingType, LocalDateTime time) {
 		this(start, destination, weightingType, time,
-				AlgorithmOptions.DIJKSTRA_BI, EncodingManager.FOOT,
+				Parameters.Algorithms.DIJKSTRA_BI, FlagEncoderFactory.FOOT,
 				Locale.ENGLISH);
 	}
 

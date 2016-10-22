@@ -13,18 +13,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.graphhopper.routing.util.FlagEncoder;
-import com.graphhopper.routing.util.Weighting;
+import com.graphhopper.routing.weighting.AbstractWeighting;
+import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.DistanceCalc;
 import com.graphhopper.util.DistanceCalcEarth;
 import com.graphhopper.util.EdgeIteratorState;
 import com.graphhopper.util.PointList;
 
+import joachimrussig.heatstressrouting.osmdata.OSMData;
+import joachimrussig.heatstressrouting.routing.HeatStressGraphHopper;
 import joachimrussig.heatstressrouting.waysegments.WaySegment;
 import joachimrussig.heatstressrouting.waysegments.WaySegmentId;
 import joachimrussig.heatstressrouting.waysegments.WaySegments;
 import joachimrussig.heatstressrouting.weatherdata.WeatherData;
-import joachimrussig.heatstressrouting.osmdata.OSMData;
-import joachimrussig.heatstressrouting.routing.HeatStressGraphHopper;
 
 /**
  * An abstract {@link Weighting} that provides common functionalities used for
@@ -32,27 +33,26 @@ import joachimrussig.heatstressrouting.routing.HeatStressGraphHopper;
  * 
  * @author Joachim Rußig
  */
-public abstract class HeatStressWeighting implements Weighting {
+public abstract class HeatStressWeighting extends AbstractWeighting {
 
 	private final Logger logger = LoggerFactory
 			.getLogger(HeatStressWeighting.class);
 
-	private final FlagEncoder encoder;
 	private final HeatStressGraphHopper hopper;
 	private final WaySegments segments;
 	private final WayNodeSearcher wayNodeSearcher;
-
 	private final LocalDateTime time;
 
 	protected DistanceCalc dc = new DistanceCalcEarth();
+
 	// see com.graphhopper.routing.QueryGraph
 	private int mainEdges;
 	private int mainNodes;
 
-	public HeatStressWeighting(FlagEncoder encoder,
+	public HeatStressWeighting(FlagEncoder flagEncoder,
 			HeatStressGraphHopper hopper, WaySegments segments,
 			LocalDateTime time) {
-		this.encoder = encoder;
+		super(flagEncoder);
 		this.hopper = hopper;
 		this.segments = segments;
 		this.time = time;
@@ -62,36 +62,10 @@ public abstract class HeatStressWeighting implements Weighting {
 		this.wayNodeSearcher = new WayNodeSearcher(hopper.getOsmData());
 	}
 
-	public FlagEncoder getEncoder() {
-		return encoder;
-	}
-
-	public WeatherData getHeatStress() {
-		return hopper.getWeatherData();
-	}
-
-	// public LocalDateTime getTimePoint() {
-	// return hopper.getTimePoint();
-	// }
-	//
-	// public void setTimePoint(LocalDateTime timePoint) {
-	// hopper.setTimePoint(timePoint);
-	// }
-
-	public HeatStressGraphHopper getHopper() {
-		return hopper;
-	}
-
-	@Override
-	public double getMinWeight(double distance) {
-		return distance;
-	}
-
 	@Override
 	public double calcWeight(EdgeIteratorState edgeState, boolean reverse,
 			int prevOrNextEdgeId) {
-	
-		
+
 		// if the edge is virtual, there are no data available so we just return
 		// the distance
 		//
@@ -159,6 +133,18 @@ public abstract class HeatStressWeighting implements Weighting {
 	}
 
 	/**
+	 * Computes the weight for the given way segment.
+	 * 
+	 * @param segment
+	 *            the way segment to compute the weight for
+	 * @param time
+	 *            to compute the weight for
+	 * @return the computed weight
+	 */
+	protected abstract double computeSegmentWeight(WaySegment segment,
+			LocalDateTime time);
+
+	/**
 	 * Computes the weight of the segments identified by {@code segmentsId}.
 	 * 
 	 * @param segmentsIds
@@ -174,18 +160,6 @@ public abstract class HeatStressWeighting implements Weighting {
 				.filter(Optional::isPresent).map(Optional::get)
 				.mapToDouble(s -> computeSegmentWeight(s, time)).sum();
 	}
-
-	/**
-	 * Computes the weight for the given way segment.
-	 * 
-	 * @param segment
-	 *            the way segment to compute the weight for
-	 * @param time
-	 *            to compute the weight for
-	 * @return the computed weight
-	 */
-	protected abstract double computeSegmentWeight(WaySegment segment,
-			LocalDateTime time);
 
 	/**
 	 * Identifies all subways including those between pillar nodes and returns
@@ -240,6 +214,30 @@ public abstract class HeatStressWeighting implements Weighting {
 		}).collect(Collectors.toList());
 	}
 
+	public WeatherData getHeatStress() {
+		return hopper.getWeatherData();
+	}
+
+	public HeatStressGraphHopper getHopper() {
+		return hopper;
+	}
+
+	@Override
+	public double getMinWeight(double currDistToGoal) {
+		return currDistToGoal;
+	}
+
+	@Override
+	public abstract String getName();
+
+	public WaySegments getSegments() {
+		return segments;
+	}
+
+	public LocalDateTime getTime() {
+		return time;
+	}
+
 	/**
 	 * Checks, if the edge {@code edgeId} is a virtual edge.
 	 * 
@@ -252,7 +250,6 @@ public abstract class HeatStressWeighting implements Weighting {
 		return edgeId >= mainEdges;
 	}
 
-	// see com.graphhopper.routing.QueryGraph.isVirtualNode
 	/**
 	 * Checks, if the node {@code nodeId} is a virtual node.
 	 * 
@@ -263,26 +260,5 @@ public abstract class HeatStressWeighting implements Weighting {
 	 */
 	protected boolean isVirtualNode(int nodeId) {
 		return nodeId >= mainNodes;
-	}
-
-	@Override
-	public FlagEncoder getFlagEncoder() {
-		return this.encoder;
-	}
-
-	@Override
-	public abstract String getName();
-
-	@Override
-	public boolean matches(String weightingAsStr, FlagEncoder encoder) {
-		return false;
-	}
-
-	public LocalDateTime getTime() {
-		return time;
-	}
-
-	public WaySegments getSegments() {
-		return segments;
 	}
 }

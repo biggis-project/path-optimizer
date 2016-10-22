@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.OptionalDouble;
 
 import com.graphhopper.routing.Path;
-import com.graphhopper.routing.util.Weighting;
+import com.graphhopper.routing.weighting.Weighting;
 
 /**
  * An objective function used by {@link OptimalTimeFinder} to find the point in

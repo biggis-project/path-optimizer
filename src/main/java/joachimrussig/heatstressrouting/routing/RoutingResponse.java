@@ -9,8 +9,8 @@ import com.graphhopper.routing.Path;
 
 /**
  * A Response created for a {@link RoutingRequest}. It contains the
- * {@code RoutingRequest} performed as well as the created {@link GHRequest} and the
- * corresponding {@link GHResponse} and the {@link Path}s found.
+ * {@code RoutingRequest} performed as well as the created {@link GHRequest} and
+ * the corresponding {@link GHResponse} and the {@link Path}s found.
  * 
  * @author Joachim Rußig
  *

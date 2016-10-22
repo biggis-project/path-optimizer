@@ -39,9 +39,6 @@ public class WebApi extends ResourceConfig {
 
 	public WebApi(@Context ServletContext servletContext) {
 
-		System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY,
-				"INFO");
-
 		ResourceBinder resourceBinder = new ResourceBinder();
 
 		register(resourceBinder);
@@ -71,7 +68,7 @@ public class WebApi extends ResourceConfig {
 
 	private enum TimeUnit {
 		HOUR, MINUTE, SECOND
-    }
+	}
 
 	private Scheduler createUpdateWeatherDataScheduler(int interval,
 			TimeUnit unit, ResourceBinder resourceBinder, int startDelay)

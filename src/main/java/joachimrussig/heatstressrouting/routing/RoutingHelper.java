@@ -14,13 +14,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import com.graphhopper.PathWrapper;
-import com.graphhopper.routing.AlgorithmOptions;
 import com.graphhopper.routing.Path;
 import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.util.FlagEncoder;
-import com.graphhopper.routing.util.Weighting;
-import com.graphhopper.routing.util.WeightingMap;
+import com.graphhopper.routing.util.FlagEncoderFactory;
+import com.graphhopper.routing.util.HintsMap;
+import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.EdgeIteratorState;
+import com.graphhopper.util.Parameters;
 import com.graphhopper.util.shapes.GHPoint;
 
 import joachimrussig.heatstressrouting.osmdata.OSMData;
@@ -46,8 +47,8 @@ public class RoutingHelper {
 
 	// TODO Deprecate or remove routing methods other then route(RoutingRequest)
 	private WeightingType weighting = WeightingType.SHORTEST;
-	private String routingAlgorithm = AlgorithmOptions.DIJKSTRA_BI;
-	private String encodingManager = EncodingManager.FOOT;
+	private String routingAlgorithm = Parameters.Algorithms.DIJKSTRA_BI;
+	private String encodingManager = FlagEncoderFactory.FOOT;
 	private Locale locale = Locale.ENGLISH;
 
 	/**
@@ -87,10 +88,10 @@ public class RoutingHelper {
 		WaySegments waySegments = new WaySegmentParser().parse(waySegmentsFile);
 
 		HeatStressGraphHopper hopper = new HeatStressGraphHopper();
-		hopper.setCHEnable(false);
+		hopper.getCHFactoryDecorator().setEnabled(false);
 		hopper.setOSMFile(osmFile.getAbsolutePath());
 		hopper.setGraphHopperLocation(ghLocation.toString());
-		hopper.setEncodingManager(new EncodingManager(EncodingManager.FOOT));
+		hopper.setEncodingManager(new EncodingManager(FlagEncoderFactory.FOOT));
 		hopper.setOsmData(osmData);
 		hopper.setWeatherData(weatherData);
 		hopper.setSegments(waySegments);
@@ -105,14 +106,14 @@ public class RoutingHelper {
 		Optional<WeatherData> newWeatherData = WeatherDataUpdater
 				.updateWeatherData(weatherDataFile, zipFileUrl, updateFile,
 						backupOldFile);
-		
+
 		if (newWeatherData.isPresent()) {
 			this.hopper.setWeatherData(newWeatherData.get());
 			return true;
 		} else {
 			return false;
 		}
-		
+
 	}
 
 	/**
@@ -369,13 +370,14 @@ public class RoutingHelper {
 	public Weighting createWeighting(WeightingType weightingType,
 			LocalDateTime time) {
 		// create weighting map and add a the time
-		WeightingMap weightingMap = new WeightingMap(weightingType.toString());
-		weightingMap.put("time", time.toString());
+		HintsMap hintsMap = new HintsMap(weightingType.toString());
+		hintsMap.setVehicle(this.encodingManager);
+		hintsMap.put("time", time.toString());
 
 		FlagEncoder flagEncoder = new EncodingManager(encodingManager)
 				.getEncoder(encodingManager);
 
-		return hopper.createWeighting(weightingMap, flagEncoder);
+		return hopper.createWeighting(hintsMap, flagEncoder);
 	}
 
 	public HeatStressGraphHopper getHopper() {

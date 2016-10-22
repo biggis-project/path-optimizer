@@ -92,22 +92,22 @@ public class JsonUtils {
 						toJsonArray(rsp.getRequest().getDestination()))
 				.add("distance", rsp.getBest().getDistance())
 				.add("duration", rsp.getBest().getTime())
-//				.add("route_weight", rsp.getBest().getRouteWeight())
+				// .add("route_weight", rsp.getBest().getRouteWeight())
 				.add("route_weights", toJsonObject(routeWeights))
 				.add("path", toJsonArray((rsp.getBest().getPoints())));
 
 		return builder.build();
 
 	}
-	
+
 	public static JsonObject toJsonObject(Map<String, Double> vals) {
 		JsonObjectBuilder builder = Json.createObjectBuilder();
 		for (Map.Entry<String, Double> val : vals.entrySet()) {
 			builder.add(val.getKey(), val.getValue());
 		}
 		return builder.build();
- 	}
-	
+	}
+
 	public static JsonObject jsonObject(String key, JsonValue val) {
 		return Json.createObjectBuilder().add(key, val).build();
 	}
@@ -143,11 +143,14 @@ public class JsonUtils {
 				.add("distance", nearbySearchResult.getDistance())
 				.add("duration", nearbySearchResult.getDuration())
 				.add("path_optimal",
-						toJsonArray(nearbySearchResult.getOptimalPath().calcPoints()))
-				.add("distance_shortest", nearbySearchResult.getShortestPath().getDistance())
-				.add("duration_shortest", nearbySearchResult.getShortestPath().getTime())
-				.add("path_shortest",
-						toJsonArray(nearbySearchResult.getShortestPath().calcPoints()));
+						toJsonArray(nearbySearchResult.getOptimalPath()
+								.calcPoints()))
+				.add("distance_shortest",
+						nearbySearchResult.getShortestPath().getDistance())
+				.add("duration_shortest",
+						nearbySearchResult.getShortestPath().getTime())
+				.add("path_shortest", toJsonArray(
+						nearbySearchResult.getShortestPath().calcPoints()));
 
 		return builder.build();
 	}
@@ -168,7 +171,7 @@ public class JsonUtils {
 
 	/**
 	 * Serializes the {@link PointList} as JsonArray of Points, e.g.
-	 * [[[49.0118083, 8.4251357], [49.0126868, 8.4065707]].
+	 * [[49.0118083, 8.4251357], [49.0126868, 8.4065707]].
 	 * 
 	 * @param points
 	 * @return

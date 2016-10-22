@@ -14,12 +14,13 @@ import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import com.graphhopper.GraphHopper;
 import com.graphhopper.reader.DataReader;
-import com.graphhopper.reader.OSMNode;
-import com.graphhopper.reader.OSMReader;
+import com.graphhopper.reader.ReaderNode;
+import com.graphhopper.reader.osm.GraphHopperOSM;
+import com.graphhopper.reader.osm.OSMReader;
 import com.graphhopper.routing.Path;
 import com.graphhopper.routing.util.FlagEncoder;
-import com.graphhopper.routing.util.Weighting;
-import com.graphhopper.routing.util.WeightingMap;
+import com.graphhopper.routing.weighting.Weighting;
+import com.graphhopper.routing.util.HintsMap;
 import com.graphhopper.storage.DataAccess;
 import com.graphhopper.storage.Directory;
 import com.graphhopper.storage.GraphHopperStorage;
@@ -39,7 +40,7 @@ import joachimrussig.heatstressrouting.weatherdata.WeatherData;
  * 
  * @author Joachim Rußig
  */
-public class HeatStressGraphHopper extends GraphHopper {
+public class HeatStressGraphHopper extends GraphHopperOSM {
 
 	private final Logger logger = LoggerFactory
 			.getLogger(HeatStressGraphHopper.class);
@@ -68,20 +69,19 @@ public class HeatStressGraphHopper extends GraphHopper {
 	}
 
 	@Override
-	public Weighting createWeighting(WeightingMap weightingMap,
-			FlagEncoder encoder) {
+	public Weighting createWeighting(HintsMap hintsMap, FlagEncoder encoder) {
 
-//		logger.debug("weightingMap = " + weightingMap.toString());
-//		logger.debug("encoder = " + encoder.toString());
-		
-		String weighting = weightingMap.getWeighting();
+		logger.debug("weightingMap = " + hintsMap.toString());
+		logger.debug("encoder = " + encoder.toString());
+
+		String weighting = hintsMap.getWeighting();
 
 		LocalDateTime time = null;
 		if (Arrays.stream(weihtingsRequiringTime)
 				.anyMatch(w -> w.equalsIgnoreCase(weighting))) {
 
-			if (weightingMap.has("time"))
-				time = LocalDateTime.parse(weightingMap.get("time", null));
+			if (hintsMap.has("time"))
+				time = LocalDateTime.parse(hintsMap.get("time", null));
 			else
 				throw new IllegalStateException("for weighting type '"
 						+ weighting
@@ -106,7 +106,7 @@ public class HeatStressGraphHopper extends GraphHopper {
 			hw.setWeights(this.weightDistance, this.weightThermalComfot);
 			return hw;
 		} else {
-			return super.createWeighting(weightingMap, encoder);
+			return super.createWeighting(hintsMap, encoder);
 		}
 	}
 
@@ -137,7 +137,7 @@ public class HeatStressGraphHopper extends GraphHopper {
 	public Pair<GHResponse, List<Path>> routePaths(GHRequest request) {
 		GHResponse response = new GHResponse();
 		List<Path> paths = calcPaths(request, response);
-		
+
 		return Pair.of(response, paths);
 	}
 
@@ -218,7 +218,7 @@ public class HeatStressGraphHopper extends GraphHopper {
 			// of the internal nodes to the corresponding OSM IDs.
 			//
 			@Override
-			protected double getElevation(OSMNode node) {
+			protected double getElevation(ReaderNode node) {
 				double res = super.getElevation(node);
 
 				// Store the OSM Node ID so it can be persisted in
@@ -271,7 +271,7 @@ public class HeatStressGraphHopper extends GraphHopper {
 			}
 		};
 
-		return initOSMReader(reader);
+		return initDataReader(reader);
 	}
 
 	/**

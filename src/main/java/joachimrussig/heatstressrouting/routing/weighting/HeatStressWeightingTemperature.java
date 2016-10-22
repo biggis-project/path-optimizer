@@ -3,7 +3,6 @@ package joachimrussig.heatstressrouting.routing.weighting;
 import java.time.LocalDateTime;
 
 import com.graphhopper.routing.util.FlagEncoder;
-import com.graphhopper.routing.util.Weighting;
 
 import joachimrussig.heatstressrouting.routing.HeatStressGraphHopper;
 import joachimrussig.heatstressrouting.thermalcomfort.ThermalComfortTemperature;
@@ -15,14 +14,14 @@ import joachimrussig.heatstressrouting.waysegments.WaySegments;
  * 
  * @author Joachim Rußig
  */
-public class HeatStressWeightingTemperature extends HeatStressWeighting
-		implements Weighting {
+public class HeatStressWeightingTemperature extends HeatStressWeighting {
 
 	public static final WeightingType WEIGHTING_TYPE = WeightingType.TEMPERATURE;
 	public static final String NAME = WEIGHTING_TYPE.toString();
 
 	public HeatStressWeightingTemperature(FlagEncoder encoder,
-			HeatStressGraphHopper hopper, WaySegments segments, LocalDateTime time) {
+			HeatStressGraphHopper hopper, WaySegments segments,
+			LocalDateTime time) {
 		super(encoder, hopper, segments, time);
 	}
 

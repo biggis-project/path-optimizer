@@ -128,7 +128,6 @@ public class Routing {
 					+ " Use 'heatstressrouting/api/v1/info' to recive the supported time range.");
 		}
 
-
 		Result<Set<WeightingType>, List<String>> weightingTypes = WebApiUtils
 				.parseWeightingTypes(weighting, WeightingType.SHORTEST);
 

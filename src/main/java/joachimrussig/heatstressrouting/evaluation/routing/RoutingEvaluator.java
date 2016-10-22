@@ -28,10 +28,10 @@ import com.graphhopper.GHRequest;
 import com.graphhopper.GHResponse;
 import com.graphhopper.PathWrapper;
 import com.graphhopper.routing.Path;
-import com.graphhopper.routing.util.EncodingManager;
 import com.graphhopper.routing.util.FlagEncoder;
-import com.graphhopper.routing.util.Weighting;
-import com.graphhopper.routing.util.WeightingMap;
+import com.graphhopper.routing.util.FlagEncoderFactory;
+import com.graphhopper.routing.util.HintsMap;
+import com.graphhopper.routing.weighting.Weighting;
 import com.graphhopper.util.shapes.GHPoint;
 
 import joachimrussig.heatstressrouting.evaluation.Evaluator;
@@ -63,7 +63,7 @@ public class RoutingEvaluator extends Evaluator {
 	private double weightDistance = 0.5;
 	private double weightThermalComfort = 0.5;
 
-	private String encoder = EncodingManager.FOOT;
+	private String encoder = FlagEncoderFactory.FOOT;
 
 	public RoutingEvaluator() {
 		this.hopper = null;
@@ -249,7 +249,7 @@ public class RoutingEvaluator extends Evaluator {
 
 		GHRequest reqShortest = new GHRequest(from, to)
 				.setWeighting(method.toString())
-				.setVehicle(EncodingManager.FOOT).setLocale(Locale.GERMAN)
+				.setVehicle(FlagEncoderFactory.FOOT).setLocale(Locale.GERMAN)
 				.setAlgorithm(routingAlgo);
 
 		Pair<GHResponse, List<Path>> resShortest = this.hopper
@@ -282,7 +282,6 @@ public class RoutingEvaluator extends Evaluator {
 				costsHeatIndex, duration.toMillis(), pathWrapper.getPoints()));
 	}
 
-
 	private double routeCostsTemperature(Path path, LocalDateTime time) {
 		return routeCosts(path,
 				createWeighting(WeightingType.TEMPERATURE, time));
@@ -293,7 +292,7 @@ public class RoutingEvaluator extends Evaluator {
 		return routeCosts(path,
 				createWeighting(WeightingType.HEAT_INDEX, time));
 	}
-	
+
 	private double routeCosts(Path path, Weighting weighting) {
 		return path.calcEdges().stream()
 				.mapToDouble(e -> weighting.calcWeight(e, false, 0)).sum();
@@ -302,13 +301,13 @@ public class RoutingEvaluator extends Evaluator {
 	private Weighting createWeighting(WeightingType weightingType,
 			LocalDateTime time) {
 
-		WeightingMap weightingMap = new WeightingMap(weightingType.toString())
-				.put("time", time.toString());
+		HintsMap hintsMap = new HintsMap(weightingType.toString()).put("time",
+				time.toString());
 
 		FlagEncoder encoder = hopper.getEncodingManager()
 				.getEncoder(this.encoder);
 
-		return hopper.createWeighting(weightingMap, encoder);
+		return hopper.createWeighting(hintsMap, encoder);
 	}
 
 	public void randomStartsAndDestinations(int n) {

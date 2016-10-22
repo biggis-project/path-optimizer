@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import org.openstreetmap.osmosis.core.domain.v0_6.Tag;
 
 import com.github.davidmoten.guavamini.Lists;
-import com.graphhopper.routing.AlgorithmOptions;
+import com.graphhopper.util.Parameters;
 import com.graphhopper.util.shapes.GHPoint;
 
 import joachimrussig.heatstressrouting.evaluation.optimaltime.OptimalTimeEvaluationItem;
@@ -57,7 +57,7 @@ public class Tests {
 					240);
 			re.exportResultsTo(new File(HeatStressRouting.OUT_DIR
 					+ "routes_weighted_setting1_1000_10_240min.csv"));
-			re.setRoutingAlgo(AlgorithmOptions.DIJKSTRA_BI);
+			re.setRoutingAlgo(Parameters.Algorithms.DIJKSTRA_BI);
 			re.run();
 			System.out.println("results size: " + re.getResultRecords().size());
 		} catch (Exception e) {
@@ -85,7 +85,7 @@ public class Tests {
 			re.sequentialTimePoints(LocalTime.MIN, LocalTime.MAX, 30);
 			re.exportResultsTo(new File(HeatStressRouting.OUT_DIR
 					+ "routes_weighted_setting2_100_10_30min.csv"));
-			re.setRoutingAlgo(AlgorithmOptions.DIJKSTRA_BI);
+			re.setRoutingAlgo(Parameters.Algorithms.DIJKSTRA_BI);
 			re.run();
 			System.out.println("results size: " + re.getResultRecords().size());
 		} catch (Exception e) {
@@ -217,7 +217,7 @@ public class Tests {
 					LocalDate.of(2015, 8, 31));
 			re.sequentialTimePoints(LocalTime.of(7, 0), LocalTime.of(23, 0),
 					240);
-			re.setRoutingAlgo(AlgorithmOptions.DIJKSTRA_BI);
+			re.setRoutingAlgo(Parameters.Algorithms.DIJKSTRA_BI);
 			re.run();
 			System.out.println("results size: " + re.getResultRecords().size());
 		} catch (Exception e) {

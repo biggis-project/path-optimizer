@@ -9,17 +9,18 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.graphhopper.routing.AlgorithmOptions;
 import com.graphhopper.routing.util.EncodingManager;
+import com.graphhopper.routing.util.FlagEncoderFactory;
+import com.graphhopper.util.Parameters;
 import com.graphhopper.util.StopWatch;
 
-import joachimrussig.heatstressrouting.waysegments.WaySegments;
-import joachimrussig.heatstressrouting.weatherdata.WeatherData;
-import joachimrussig.heatstressrouting.weatherdata.WeatherDataParser;
-import joachimrussig.heatstressrouting.waysegments.WaySegmentParser;
 import joachimrussig.heatstressrouting.osmdata.OSMData;
 import joachimrussig.heatstressrouting.osmdata.OSMFileReader;
 import joachimrussig.heatstressrouting.routing.HeatStressGraphHopper;
+import joachimrussig.heatstressrouting.waysegments.WaySegmentParser;
+import joachimrussig.heatstressrouting.waysegments.WaySegments;
+import joachimrussig.heatstressrouting.weatherdata.WeatherData;
+import joachimrussig.heatstressrouting.weatherdata.WeatherDataParser;
 
 /**
  * An abstract {@class Evaluator} class that provides common functionalities,
@@ -44,7 +45,7 @@ public abstract class Evaluator {
 	protected File osmFile;
 	protected File waySegmentsFile = null;
 	protected java.nio.file.Path ghLocation = null;
-	protected String routingAlgo = AlgorithmOptions.DIJKSTRA;
+	protected String routingAlgo = Parameters.Algorithms.DIJKSTRA;
 	protected WeatherData weatherData;
 
 	protected OSMData osmData;
@@ -155,10 +156,10 @@ public abstract class Evaluator {
 				"GraphHopper Location is " + this.ghLocation.toAbsolutePath());
 
 		HeatStressGraphHopper hopper = new HeatStressGraphHopper();
-		hopper.setCHEnable(false);
+		hopper.getCHFactoryDecorator().setEnabled(false);
 		hopper.setOSMFile(osmFile.getAbsolutePath());
 		hopper.setGraphHopperLocation(this.ghLocation.toString());
-		hopper.setEncodingManager(new EncodingManager(EncodingManager.FOOT));
+		hopper.setEncodingManager(new EncodingManager(FlagEncoderFactory.FOOT));
 		hopper.setOsmData(this.osmData);
 		hopper.setWeatherData(this.weatherData);
 		if (waySegments != null)
