@@ -23,9 +23,11 @@ library(rgdal)
 library(rgeos)
 library(spdep)
 
-# The raster data are load once on server start up,
-# because resampling and projection can take some time.
-raster_data <- loadRasterData()
+if (isTRUE(enableRasterOverlay)) {
+  # The raster data are loaded once on server start up,
+  # because resampling and projection can take some time.
+  raster_data <- loadRasterData()
+}
 
 shinyServer(function(input, output, session) {
   
@@ -98,14 +100,22 @@ shinyServer(function(input, output, session) {
   
   ## draw the initial map
   output$map_routing <- renderLeaflet({
-    raster_pal_morgen <- colorNumeric(palette = viridis(100, option = "B"),
-                               domain = raster_data[["morgen"]]@data@values,
-                               na.color = "#00000000")
-    raster_pal_abend <- colorNumeric(palette = viridis(100, option = "B"),
-                                      domain = raster_data[["abend"]]@data@values,
-                                      na.color = "#00000000")
-
-    leaflet() %>%
+    if (isTRUE(enableRasterOverlay)) {
+      raster_pal_morgen <-
+        colorNumeric(
+          palette = viridis(100, option = "B"),
+          domain = raster_data[["morgen"]]@data@values,
+          na.color = "#00000000"
+        )
+      raster_pal_abend <-
+        colorNumeric(
+          palette = viridis(100, option = "B"),
+          domain = raster_data[["abend"]]@data@values,
+          na.color = "#00000000"
+        )
+    }
+    
+    map <- leaflet() %>%
       addOnClickListner(category = "shape",
                         layerId = "routing-bbox",
                         inputId = "routing_bbox_click") %>%
@@ -115,25 +125,30 @@ shinyServer(function(input, output, session) {
         zoom = 14
       ) %>%
       addTiles(group = "OpenStreetMap",
-               options = providerTileOptions(noWrap = TRUE)) %>%
-      addRasterImage(
-        raster_data[["morgen"]],
-        colors = raster_pal_morgen,
-        layerId = "raster_morgen",
-        group = "raster_morgen",
-        project = FALSE,
-        opacity = 0.6
-      ) %>%
-      addRasterImage(
-        raster_data[["abend"]],
-        colors = raster_pal_abend,
-        layerId = "raster_abend",
-        group = "raster_abend",
-        project = FALSE,
-        opacity = 0.6
-      ) %>% hideGroup("raster_morgen") %>% hideGroup("raster_abend")
+               options = providerTileOptions(noWrap = TRUE))
+    
+    if (isTRUE(enableRasterOverlay)) {
+      map <- map %>%
+        addRasterImage(
+          raster_data[["morgen"]],
+          colors = raster_pal_morgen,
+          layerId = "raster_morgen",
+          group = "raster_morgen",
+          project = FALSE,
+          opacity = 0.6
+        ) %>%
+        addRasterImage(
+          raster_data[["abend"]],
+          colors = raster_pal_abend,
+          layerId = "raster_abend",
+          group = "raster_abend",
+          project = FALSE,
+          opacity = 0.6
+        ) %>% hideGroup("raster_morgen") %>% hideGroup("raster_abend")
+    }
+    map
   })
-
+  
   output$routing_results_table <- shiny::renderDataTable({
     # computeTable()
     tab <- dat$routing_table
@@ -586,17 +601,20 @@ shinyServer(function(input, output, session) {
   
   ## draw the initial map
   output$map_optimaltime <- renderLeaflet({
-    raster_pal_morgen <- colorNumeric(palette = viridis(100, option = "B"),
-                                      domain = raster_data[["morgen"]]@data@values,
-                                      na.color = "#00000000")
-    raster_pal_abend <- colorNumeric(palette = viridis(100, option = "B"),
-                                     domain = raster_data[["abend"]]@data@values,
-                                     na.color = "#00000000")
     
-    leaflet() %>%
+    if (isTRUE(enableRasterOverlay)) {
+      raster_pal_morgen <- colorNumeric(palette = viridis(100, option = "B"),
+                                        domain = raster_data[["morgen"]]@data@values,
+                                        na.color = "#00000000")
+      raster_pal_abend <- colorNumeric(palette = viridis(100, option = "B"),
+                                       domain = raster_data[["abend"]]@data@values,
+                                       na.color = "#00000000") 
+      }
+    
+    map <- leaflet() %>%
       addOnClickListner(category = "shape",
                         layerId = "optimaltime-bbox",
-                        inputId = "optimaltime_bbox_click") %>% 
+                        inputId = "optimaltime_bbox_click") %>%
       addOnClickListner(category = "shape",
                         layerId = "search-radius",
                         inputId = "optimaltime_search_radius_click") %>%
@@ -617,25 +635,29 @@ shinyServer(function(input, output, session) {
         group = "bbox",
         options = pathOptions(className = "optimaltime-bbox")
       ) %>%
-      hideGroup("bbox") %>%
-      # Add thermal scans
-      addRasterImage(
-        raster_data[["morgen"]],
-        colors = raster_pal_morgen,
-        layerId = "raster_morgen",
-        group = "raster_morgen",
-        project = FALSE,
-        opacity = 0.6
-      ) %>%
-      addRasterImage(
-        raster_data[["abend"]],
-        colors = raster_pal_abend,
-        layerId = "raster_abend",
-        group = "raster_abend",
-        project = FALSE,
-        opacity = 0.6
-      ) %>% hideGroup("raster_morgen") %>% hideGroup("raster_abend")
+      hideGroup("bbox")
     
+    if (isTRUE(enableRasterOverlay)) {
+      map <- map %>%
+        # Add thermal scans
+        addRasterImage(
+          raster_data[["morgen"]],
+          colors = raster_pal_morgen,
+          layerId = "raster_morgen",
+          group = "raster_morgen",
+          project = FALSE,
+          opacity = 0.6
+        ) %>%
+        addRasterImage(
+          raster_data[["abend"]],
+          colors = raster_pal_abend,
+          layerId = "raster_abend",
+          group = "raster_abend",
+          project = FALSE,
+          opacity = 0.6
+        ) %>% hideGroup("raster_morgen") %>% hideGroup("raster_abend")
+    }
+    map
   })
   
   output$optimaltime_results_table <- shiny::renderDataTable({

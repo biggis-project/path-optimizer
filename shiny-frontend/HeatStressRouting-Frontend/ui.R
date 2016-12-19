@@ -44,10 +44,13 @@ shinyUI(fluidPage(
                  checkboxGroupInput(
                    "routing_display_options",
                    "Display Options:",
-                   choices = c(
-                     "Show Bounding Box" = "show_bbox",
-                     "Show Thermal Scan" = "show_thermalscan"
-                   )
+                   choices =
+                     if (isTRUE(enableRasterOverlay)) {
+                       c("Show Bounding Box" = "show_bbox",
+                         "Show Thermal Scan" = "show_thermalscan")
+                     } else {
+                       c("Show Bounding Box" = "show_bbox")
+                     }
                  )
                ),
                mainPanel(
@@ -120,12 +123,20 @@ shinyUI(fluidPage(
                  checkboxGroupInput(
                    "optimaltime_display_options",
                    "Display Options:",
-                   choices = c(
-                     "Show Search Radius" = "show_radius",
-                     "Show Bounding Box" = "show_bbox",
-                     "Show Thermal Scan" = "show_thermalscan"
-                   ),
-                   selected = c("show_radius")
+                   choices = 
+                     if (isTRUE(enableRasterOverlay)) {
+                       c(
+                         "Show Search Radius" = "show_radius",
+                         "Show Bounding Box" = "show_bbox",
+                         "Show Thermal Scan" = "show_thermalscan"
+                       )
+                     } else {
+                       c("Show Search Radius" = "show_radius",
+                         "Show Bounding Box" = "show_bbox")
+                     }
+                   ,
+                   selected = c("show_radius"
+                   )
                  ),
                  sliderInput(
                    "optimaltime_max_results",

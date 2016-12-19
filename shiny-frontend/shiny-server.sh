@@ -11,6 +11,7 @@ chown shiny.shiny /var/log/shiny-server
 # See also http://docs.rstudio.com/shiny-server/#run_as
 echo export BACKEND_HOST=$BACKEND_HOST >> /home/shiny/.bash_profile
 echo export BACKEND_PORT=$BACKEND_PORT >> /home/shiny/.bash_profile
+echo export ENABLE_RASTER_OVERLAY=$ENABLE_RASTER_OVERLAY >> /home/shiny/.bash_profile
 
 # Starting the shiny server
 exec shiny-server >> /var/log/shiny-server.log 2>&1

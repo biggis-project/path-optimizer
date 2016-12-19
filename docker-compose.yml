@@ -5,8 +5,9 @@ services:
       context: ./shiny-frontend
       dockerfile: Dockerfile
       args:
-        BACKEND_HOST: back-end # the same as the service name of the back-end server 
-        BACKEND_PORT: 8080
+        BACKEND_HOST: 'back-end' # the same as the service name of the back-end server 
+        BACKEND_PORT: '8080'
+        ENABLE_RASTER_OVERLAY: 'false' # enable or disable the 'show thermal scan' option
     ports:
       - 8000:80 # frontend will be available at http://localhost:8000
     depends_on:

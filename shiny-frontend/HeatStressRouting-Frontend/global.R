@@ -1,6 +1,10 @@
 source("utils.R")
 source("webapi.R")
 
+# The display option 'Show Raster Overlay' can be enabled by setting the 
+# enviornment variable "ENABLE_RASTER_OVERLAY" to 'true'
+enableRasterOverlay <- as.logical(Sys.getenv("ENABLE_RASTER_OVERLAY", unset = FALSE))
+
 #' Adds an on click listner to a specified layer and 
 #' triggers an input message if the layer is clicked.
 #'  
