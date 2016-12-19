@@ -31,8 +31,8 @@ table.marker-popup td {
 /* select action buttons  */
 /**************************/
 
-/* make sure, that ther are displayed at the same vertical position
-   as the text input field */
+/* ensures that the inline action buttons are displayed
+  at the same vertical position as the text input fields */
 .inline-action-button-container {
   display: inline-block;
   vertical-align: bottom;
