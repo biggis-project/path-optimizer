@@ -1,6 +1,7 @@
 version: '2'
 services:
   front-end:
+    restart: always
     build: 
       context: ./shiny-frontend
       dockerfile: Dockerfile
@@ -13,6 +14,7 @@ services:
     depends_on:
       - back-end
   back-end:
+    restart: always
     build: 
       context: ./target
       dockerfile: Dockerfile
