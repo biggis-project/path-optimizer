@@ -34,8 +34,8 @@ import net.osmand.util.OpeningHoursParser;
  */
 public class OSMData {
 
-	// a multi value map, because the id is only unique within the object type
-	// (node, way, relation)
+	// A multi valued map is used, because the id is only unique within the
+	// object type (i.e. node, way, or relation)
 	private MultiValuedMap<Long, Entity> entities;
 	private Bound boundingBox;
 
@@ -97,7 +97,7 @@ public class OSMData {
 	 * 
 	 * @param id
 	 *            the id to check
-	 * @return true, if the object contains any {@code Entity} with id
+	 * @return {@code true}, if the object contains any {@code Entity} with id
 	 *         {@code id}
 	 * 
 	 */
@@ -106,14 +106,14 @@ public class OSMData {
 	}
 
 	/**
-	 * Checks if the object contains any {@link Entity} with id {@code id} of
-	 * type {@code type}.
+	 * Checks if the object contains any {@link Entity} with the id {@code id}
+	 * of type {@code type}.
 	 * 
 	 * @param id
 	 *            the id to check
 	 * @param type
 	 *            the {@link EntityType} to check
-	 * @return true, if the object contains any {@code Entity} with id
+	 * @return {@code true}, if the object contains any {@code Entity} with id
 	 *         {@code id} and type {@code type}
 	 */
 	public boolean contains(long id, EntityType type) {
@@ -126,7 +126,8 @@ public class OSMData {
 	 * 
 	 * @param id
 	 *            the id to check
-	 * @return true, if the object contains any {@code Node} with id {@code id}
+	 * @return {@code true}, if the object contains any {@code Node} with id
+	 *         {@code id}
 	 */
 	public boolean containsNode(long id) {
 		return contains(id, EntityType.Node);
@@ -323,7 +324,7 @@ public class OSMData {
 	 * 
 	 * @param wayId
 	 *            the if of the way to check
-	 * @return true, if the way is cyclic
+	 * @return {@code true}, if the way is cyclic
 	 */
 	public boolean isCyclicWay(long wayId) {
 		Optional<Way> way = getWayById(wayId);
@@ -337,15 +338,16 @@ public class OSMData {
 	}
 
 	/**
-	 * Computes the haversine distance between {@code n1} and {@code n2}.
+	 * Computes the haversine distance between the nodes {@code n1} and
+	 * {@code n2}.
 	 * 
 	 * @see OSMUtils#distance(Node, Node)
 	 * @param n1
-	 *            OSM node id
+	 *            OSM node id of n1
 	 * @param n2
-	 *            OSM node
+	 *            OSM node id of n1
 	 * @return the haversine distance between the two nodes, if both exits and
-	 *         OptionalDouble.Empty otherwise
+	 *         {@code OptionalDouble.empty()} otherwise
 	 */
 	public OptionalDouble distance(long n1, long n2) {
 		Optional<Node> node1 = getNodeById(n1);
@@ -546,7 +548,7 @@ public class OSMData {
 	public Set<Node> getNodes() {
 		return getEntityStream()
 				.filter(e -> e.getType().equals(EntityType.Node))
-				.map(e -> (Node) e).collect(Collectors.toSet());
+				.map(Node.class::cast).collect(Collectors.toSet());
 	}
 
 	/**
@@ -555,7 +557,7 @@ public class OSMData {
 	 */
 	public Set<Way> getWays() {
 		return getEntityStream().filter(e -> e.getType().equals(EntityType.Way))
-				.map(e -> (Way) e).collect(Collectors.toSet());
+				.map(Way.class::cast).collect(Collectors.toSet());
 	}
 
 	/**
@@ -567,7 +569,7 @@ public class OSMData {
 	 */
 	public Set<Way> getWaysContainingNode(long nodeId) {
 		return getEntityStream().filter(e -> e.getType().equals(EntityType.Way))
-				.map(e -> (Way) e)
+				.map(Way.class::cast)
 				.filter(w -> w.getWayNodes().stream()
 						.anyMatch(n -> n.getNodeId() == nodeId))
 				.collect(Collectors.toSet());
