@@ -19,6 +19,7 @@ http://ipe-koi09.fzi.de:8000
 
 # Prerequisites
 - [mvn (Maven)](https://maven.apache.org/install.html)
+  - `sudo apt install maven`
 - [docker](https://docs.docker.com/engine/installation/)
 - [docker-compose](https://docs.docker.com/compose/install/)
 - [R](https://cran.r-project.org/doc/FAQ/R-FAQ.html#How-can-R-be-installed_003f)
@@ -30,7 +31,7 @@ http://ipe-koi09.fzi.de:8000
 
 # Try it out
 ```sh
-$ git clone git://github.com/biggis-project/path-optimizer.git
+$ git clone https://github.com/biggis-project/path-optimizer.git
 $ cd path-optimizer
 $ mvn clean install
 $ docker-compose up
