@@ -25,6 +25,7 @@ http://ipe-koi09.fzi.de:8000
 - [R](https://cran.r-project.org/doc/FAQ/R-FAQ.html#How-can-R-be-installed_003f)
 - [gdal](https://trac.osgeo.org/gdal/wiki/DownloadingGdalBinaries)
 - [osmosis](https://wiki.openstreetmap.org/wiki/Osmosis#How_to_install)
+  - `sudo apt install osmosis`
 - Windows: e.g. [cygwin](https://cygwin.com/install.html) to execute sh scripts
 - TODO ...
 
