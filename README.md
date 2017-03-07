@@ -12,7 +12,7 @@ The project contains the prototype of a web application that provides to service
   optimal route between the start point and the place is computed.  
 
 
-# Running DEMO
+# Visit a running DEMO instance
 A running docker-based instance is running on our server:
 http://ipe-koi09.fzi.de:8000
 
@@ -30,14 +30,14 @@ http://ipe-koi09.fzi.de:8000
 - TODO ...
 
 
-# Try it out
+# Try it out locally
 ```sh
 $ git clone https://github.com/biggis-project/path-optimizer.git
 $ cd path-optimizer
 $ mvn clean install
 $ docker-compose up
 ```
-Now go to `http://localhost:8000/`
+Now go to http://localhost:8000/ to see the locally running instance.
 
 # Contact
 If there are any questions please feel free and send a mail to: <joachim.russig@gmx.de>.
